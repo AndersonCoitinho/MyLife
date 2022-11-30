@@ -14,7 +14,7 @@ export default function LifeStatus() {
   return (
     <View style={styles.container}>
          <Lottie
-        source={require("../../../Assets/education/education-100.json")}
+        source={require("../../../Assets/education/education-50.json")}
         autoPlay
         loop
         style={styles.educacaoAnimacao}

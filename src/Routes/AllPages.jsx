@@ -14,9 +14,11 @@ export default function AllPages() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="AppExplanation" component={AppExplanation} />
         <Stack.Screen name="Start" component={Start} />
+        <Stack.Screen name="AppExplanation" component={AppExplanation} />
       </Stack.Navigator>
     </NavigationContainer>
   );
+
+  
 } 
