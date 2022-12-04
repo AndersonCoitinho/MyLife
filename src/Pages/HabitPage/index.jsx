@@ -82,6 +82,7 @@ export default function HabitPage({ route }) {
     if (notificationToggle === true && !dayNotification && !timeNotification) {
       Alert.alert("Você precisa colocar a frequência e horário da notificação");
     } else {
+
       navigation.navigate("Home", {
         updatedHabit: `Updated in ${habit?.habitArea}`,
       });
@@ -140,7 +141,7 @@ export default function HabitPage({ route }) {
             {create === false ? (
               <UpdateExcludeButtons
                 handleUpdate={handleUpdateHabit}
-                habitArea={habitArea}
+                habitArea={habit?.habitArea}
                 habitInput={habitInput}
               />
             ) : (
