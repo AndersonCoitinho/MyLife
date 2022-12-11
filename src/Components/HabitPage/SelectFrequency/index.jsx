@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image, View, StyleSheet } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 
-export default function SelectFrequency ({ habitFrequency, frequencyInput }) {
+export default function SelectFrequency({ habitFrequency, frequencyInput }) {
   const [selected, setSelected] = useState(
     habitFrequency ? habitFrequency : "-"
   );
@@ -12,7 +12,6 @@ export default function SelectFrequency ({ habitFrequency, frequencyInput }) {
     { key: "Semanal", value: "Semanal" },
     { key: "Mensal", value: "Mensal" },
   ];
-
   useEffect(() => {
     frequencyInput(habitFrequency ? habitFrequency : undefined);
   }, []);
@@ -42,32 +41,32 @@ export default function SelectFrequency ({ habitFrequency, frequencyInput }) {
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-    boxStyle: {
-      borderWidth: 1,
-      borderColor: "white",
-      paddingHorizontal: 20,
-      paddingVertical: 15,
-    },
-    inputStyle: {
-      color: "white",
-    },
-    dropdownStyle: {
-      borderWidth: 0,
-    },
-    dropdownItemStyle: {
-      borderWidth: 1,
-      borderColor: "#BBBB",
-      borderRadius: 10,
-      marginBottom: 15,
-    },
-    dropdownTextStyle: {
-      color: "#BBBBBB",
-    },
-    arrow: {
-      width: 20,
-      height: 20,
-    },
-  });
+  boxStyle: {
+    borderWidth: 1,
+    borderColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  inputStyle: {
+    color: "white",
+  },
+  dropdownStyle: {
+    borderWidth: 0,
+  },
+  dropdownItemStyle: {
+    borderWidth: 1,
+    borderColor: "#BBBB",
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  dropdownTextStyle: {
+    color: "#BBBBBB",
+  },
+  arrow: {
+    width: 20,
+    height: 20,
+  },
+});

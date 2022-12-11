@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,10 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
-
 import { useNavigation } from "@react-navigation/native";
+import * as Notifications from "expo-notifications"
 
 import SelectHabit from "../../Components/HabitPage/SelectHabit";
 import SelectFrequency from "../../Components/HabitPage/SelectFrequency";
@@ -17,6 +18,16 @@ import TimeDatePicker from "../../Components/HabitPage/TimeDataPicker";
 import UpdateExcludeButtons from "../../Components/HabitPage/UpdateExcludeButtons";
 import DefaultButton from "../../Components/Common/DefaultButton";
 import HabitsService from "../../Services/HabitService";
+import NotificationService from "../../Services/NotificationService";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 
 export default function HabitPage({ route }) {
   const navigation = useNavigation();
@@ -29,15 +40,16 @@ export default function HabitPage({ route }) {
   const { create, habit } = route.params;
 
   const habitCreated = new Date();
-  const formatDate = `${habitCreated.getFullYear()}-${
-    habitCreated.getMonth() + 1
-  }-${habitCreated.getDate()}`;
+  const formatDate = `${habitCreated.getFullYear()}-${habitCreated.getMonth() + 1
+    }-${habitCreated.getDate()}`;
+
+  // Notification Creation
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   function handleCreateHabit() {
-    if (
-      habitInput === undefined ||
-      frequencyInput === undefined
-    ) {
+    if (habitInput === undefined || frequencyInput === undefined) {
       Alert.alert(
         "Você precisa selecionar um hábito e frequência para continuar"
       );
@@ -57,6 +69,14 @@ export default function HabitPage({ route }) {
         "Você precisa dizer a frequência e o horário da notificação!"
       );
     } else {
+      if (notificationToggle) {
+        NotificationService.createNotification(
+        habitInput,
+        frequencyInput,
+        dayNotification,
+        timeNotification
+        );
+      }
       HabitsService.createHabit({
         habitArea: habit?.habitArea,
         habitName: habitInput,
@@ -82,12 +102,59 @@ export default function HabitPage({ route }) {
     if (notificationToggle === true && !dayNotification && !timeNotification) {
       Alert.alert("Você precisa colocar a frequência e horário da notificação");
     } else {
-
-      navigation.navigate("Home", {
-        updatedHabit: `Updated in ${habit?.habitArea}`,
+      HabitsService.updateHabit({
+        habitArea: habit?.habitArea,
+        habitName: habitInput,
+        habitFrequency: frequencyInput,
+        habitHasNotification: notificationToggle,
+        habitNotificationFrequency: dayNotification,
+        habitNotificationTime: timeNotification,
+        habitNotificationId: notificationToggle ? habitInput : null,
+      }).then(() => {
+        Alert.alert("Sucesso na atualização do hábito");
+        if (!notificationToggle) {
+        } else {
+        }
+        navigation.navigate("Home", {
+          updatedHabit: `Updated in ${habit?.habitArea}`,
+        });
       });
     }
   }
+
+
+  useEffect(() => {
+    if (habit?.habitHasNotification == 1) {
+      setNotificationToggle(true);
+      setDayNotification(habit?.habitNotificationFrequency);
+      setTimeNotification(habit?.habitNotificationTime);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (notificationToggle === false) {
+      setTimeNotification(null);
+      setDayNotification(null);
+    }
+  }, [notificationToggle]);
+
+  // Notification Get Token
+  useEffect(() => {
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+
 
   return (
     <View style={styles.container}>
@@ -137,7 +204,6 @@ export default function HabitPage({ route }) {
               )
             ) : null}
 
-
             {create === false ? (
               <UpdateExcludeButtons
                 handleUpdate={handleUpdateHabit}
@@ -154,8 +220,6 @@ export default function HabitPage({ route }) {
                 />
               </View>
             )}
-
-
           </View>
         </View>
       </ScrollView>
@@ -180,6 +244,9 @@ const styles = StyleSheet.create({
   mainContent: {
     width: 250,
     alignSelf: "center",
+  },
+  configButton: {
+    alignItems: "center",
   },
   title: {
     fontWeight: "bold",

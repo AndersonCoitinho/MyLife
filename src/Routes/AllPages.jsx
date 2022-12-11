@@ -8,7 +8,7 @@ import HabitPage from "../Pages/HabitPage";
 
 const Stack = createNativeStackNavigator();
 
-export default function AllPages() {   
+export default function AllPages() {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -23,6 +23,4 @@ export default function AllPages() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-
-  
-} 
+}

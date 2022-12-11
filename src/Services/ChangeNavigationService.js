@@ -19,7 +19,7 @@ const setShowHome = (obj) => {
         (_, { rowsAffected, insertId }) => {
           if (rowsAffected > 0) {
             resolve(insertId);
-          } 
+          }
         },
         (_, error) => {
           reject(error);
@@ -45,9 +45,7 @@ const checkShowHome = (id) => {
   });
 };
 
-
-
 export default {
   setShowHome,
-  checkShowHome
+  checkShowHome,
 };

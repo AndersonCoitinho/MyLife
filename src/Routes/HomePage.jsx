@@ -1,6 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import AppExplanation from "../Pages/AppExplanation";
 import Home from "../Pages/Home";
 import HabitPage from "../Pages/HabitPage";
